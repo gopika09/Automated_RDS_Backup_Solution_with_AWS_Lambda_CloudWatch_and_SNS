@@ -66,7 +66,7 @@ The last step is to set up an automatic schedule for Lambda to run regularly. AW
 
 ![diagram](https://github.com/gopika09/Automated_RDS_Backup_Solution_with_AWS_Lambda_CloudWatch_and_SNS/blob/main/images/event_bridge.png)
 
-### The Result: Continuous Backups with Notifications
+## The Result: Continuous Backups with Notifications
 
 With everything set up, here’s how it all works together:
 
