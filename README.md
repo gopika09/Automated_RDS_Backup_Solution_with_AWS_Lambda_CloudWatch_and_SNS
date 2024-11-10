@@ -1,17 +1,21 @@
 # Automated RDS Backup and Retention Management
 
-## Introduction
+## Introduction :
 
 This project automates the backup process for an AWS RDS instance, creates snapshots, and implements a retention policy to manage the deletion of old snapshots. It also integrates AWS Lambda, SNS (Simple Notification Service), and EventBridge to schedule the backup process and notify users of successful backups and deletions.
 
-## Features
+## Overview :
+
+![diagram](https://github.com/gopika09/Automated_RDS_Backup_Solution_with_AWS_Lambda_CloudWatch_and_SNS/blob/main/images/Screenshot%202024-11-10%20200116.png)
+
+## Features :
 
 - **Automated RDS Snapshot Creation**: Automatically creates a snapshot of an RDS instance at regular intervals.
 - **Snapshot Retention Policy**: Retains snapshots for a configurable number of days (7 days in this case), deleting older snapshots.
 - **SNS Notifications**: Sends notifications about the backup process and snapshot deletions.
 - **EventBridge Scheduling**: Triggers Lambda function execution on a fixed schedule (every 5 minutes).
 
-## Tools and Technologies
+## Tools and Technologies :
 
 - **AWS RDS (Relational Database Service)**: Used to host the MySQL database.
 - **AWS Lambda**: Executes the Python function to create snapshots and handle retention.
@@ -19,7 +23,7 @@ This project automates the backup process for an AWS RDS instance, creates snaps
 - **AWS EventBridge**: Triggers the Lambda function at regular intervals.
 - **Python 3.11**: The runtime for the Lambda function, where the logic is implemented.
 
-## Steps to Deploy
+## Steps to Deploy :
 
 ### 1) Setting Up the RDS Instance
 
@@ -32,6 +36,8 @@ To kick things off, we need an AWS RDS instance to serve as the database. We'll 
   
 Once the RDS instance is ready, you’ll have a fully functional MySQL database, accessible for all your backup operations
 
+![diagram](https://github.com/gopika09/Automated_RDS_Backup_Solution_with_AWS_Lambda_CloudWatch_and_SNS/blob/main/images/RDS.png)
+
 ### 2) Creating the SNS Topic for Notifications
 
 Next, we set up a notification system to keep track of our backups. AWS SNS (Simple Notification Service) will help us send email notifications about the status of our backups.
@@ -40,6 +46,8 @@ Next, we set up a notification system to keep track of our backups. AWS SNS (Sim
 - **Set Up the Subscription**: Now, you’ll need to subscribe to this topic. The protocol is set to "Email," and the endpoint will be your email address. For example, `gopikagop09@gmail.com`. After this, you’ll get an email asking you to confirm the subscription. Click the confirmation link, and you’re all set!
 
 Now, you’ll be able to receive real-time notifications whenever a backup occurs, or if an old snapshot is deleted according to the retention policy.
+
+![diagram](https://github.com/gopika09/Automated_RDS_Backup_Solution_with_AWS_Lambda_CloudWatch_and_SNS/blob/main/images/SNS.png)
 
 ### 3) Creating the Lambda Function to Automate Backups
 
@@ -58,6 +66,8 @@ The last step is to set up an automatic schedule for Lambda to run regularly. AW
 - **Create a Rule**: In the EventBridge console, create a new rule called `my_rule`. Set the rule type to "Schedule" and choose a rate-based schedule to trigger every 5 minutes. This will ensure that every 5 minutes, a snapshot is created for your RDS instance.
 - **Set the Target**: The target for this rule is your Lambda function (`myfunction`). With this in place, EventBridge will invoke your Lambda function every 5 minutes, ensuring that your RDS instance is backed up regularly.
 
+![diagram](https://github.com/gopika09/Automated_RDS_Backup_Solution_with_AWS_Lambda_CloudWatch_and_SNS/blob/main/images/event_bridge.png)
+
 ### The Result: Continuous Backups with Notifications
 
 With everything set up, here’s how it all works together:
@@ -66,6 +76,6 @@ With everything set up, here’s how it all works together:
 - The Lambda function checks the retention policy (keeping snapshots for 7 days) and deletes old snapshots automatically.
 - Once a snapshot is created, or an old one is deleted, SNS sends a notification to your email to keep you informed about the process.
 
-## Conclusion
+## Conclusion :
 
 This solution not only automates your RDS instance backups but also ensures that you stay up-to-date on the status of those backups. The combination of RDS, Lambda, SNS, and EventBridge makes it a robust and easy-to-manage backup system. You can easily adjust the retention period, schedule, and configuration to suit your needs.
