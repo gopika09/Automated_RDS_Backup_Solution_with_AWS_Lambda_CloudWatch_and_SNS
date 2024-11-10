@@ -17,7 +17,7 @@ This project automates the backup process for an AWS RDS instance, creates snaps
 - **AWS Lambda**: Executes the Python function to create snapshots and handle retention.
 - **AWS SNS (Simple Notification Service)**: Sends notifications to a specified email address.
 - **AWS EventBridge**: Triggers the Lambda function at regular intervals.
-- **Python 3.11**: The runtime for the Lambda function, where the business logic is implemented.
+- **Python 3.11**: The runtime for the Lambda function, where the logic is implemented.
 
 ## Steps to Deploy
 
@@ -26,11 +26,11 @@ This project automates the backup process for an AWS RDS instance, creates snaps
 To kick things off, we need an AWS RDS instance to serve as the database. We'll start by creating an RDS instance running MySQL:
 
 - **Choose Your Engine**: MySQL is selected as the database engine for our instance.
-- **Set Up the Instance**: During setup, give your instance a unique name like `database-1`, and configure the instance type to `db.t3.micro`, which is ideal for testing and small workloads. 
-- **Credentials**: Set the master username to `admin`, and choose a secure password (e.g., `17Saythename`).
+- **Set Up the Instance**: During setup, give your instance a unique name like `database-1`, and configure the instance type to `db.t3.micro`. 
+- **Credentials**: Set the master username to `admin`, and choose a secure password (e.g., `17Saythename` in this case).
 - **Security Group**: The default security group is sufficient for now.
   
-Once the RDS instance is ready, you’ll have a fully functional MySQL database, accessible for all your backup operations!
+Once the RDS instance is ready, you’ll have a fully functional MySQL database, accessible for all your backup operations
 
 ### 2) Creating the SNS Topic for Notifications
 
@@ -53,7 +53,7 @@ With the Lambda function in place, you’re ready to automate the entire backup 
 
 ### 4) Scheduling with EventBridge
 
-The last step is to set up an automatic schedule for Lambda to run regularly, creating snapshots without you lifting a finger. AWS EventBridge is the tool that makes this happen.
+The last step is to set up an automatic schedule for Lambda to run regularly. AWS EventBridge is the tool that makes this happen.
 
 - **Create a Rule**: In the EventBridge console, create a new rule called `my_rule`. Set the rule type to "Schedule" and choose a rate-based schedule to trigger every 5 minutes. This will ensure that every 5 minutes, a snapshot is created for your RDS instance.
 - **Set the Target**: The target for this rule is your Lambda function (`myfunction`). With this in place, EventBridge will invoke your Lambda function every 5 minutes, ensuring that your RDS instance is backed up regularly.
