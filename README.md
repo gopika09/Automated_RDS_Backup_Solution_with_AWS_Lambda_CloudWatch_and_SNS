@@ -73,6 +73,8 @@ With everything set up, here’s how it all works together:
 - The Lambda function checks the retention policy (keeping snapshots for 7 days) and deletes old snapshots automatically.
 - Once a snapshot is created, or an old one is deleted, SNS sends a notification to your email to keep you informed about the process.
 
+![diagram](https://github.com/gopika09/Automated_RDS_Backup_Solution_with_AWS_Lambda_CloudWatch_and_SNS/blob/main/images/result.png)
+
 ## Conclusion :
 
 This solution not only automates your RDS instance backups but also ensures that you stay up-to-date on the status of those backups. The combination of RDS, Lambda, SNS, and EventBridge makes it a robust and easy-to-manage backup system. You can easily adjust the retention period, schedule, and configuration to suit your needs.
