@@ -54,8 +54,7 @@ Now comes the heart of the automation—the Lambda function that will manage the
 - **Create the Lambda Function**: Open the AWS Lambda service, and create a new function named `myfunction`. Set the runtime to Python 3.11.
 - **Add Your Code**: Inside the function editor, you’ll paste the Python code that handles the snapshot creation and retention logic. This code will automatically trigger the RDS snapshot creation and delete old snapshots based on the retention policy (7 days in this case).
 - **SNS and RDS Configuration**: Be sure to update the Lambda function with the correct ARN for your SNS topic and the RDS instance identifier (`database-1`) so that the notifications and backups link to the right resources.
-
-With the Lambda function in place, you’re ready to automate the entire backup process.
+- **IAM Role Configuration for Lambda**:In order for the Lambda function to interact with RDS and SNS, you need to attach the necessary IAM roles with full access permissions. You can do this by creating an IAM policy. I have attached `AmazonRDSFullAccess` and `AmazonSNSFullAccess` policies to lambda function.
 
 ### 4) Scheduling with EventBridge
 
