@@ -1,0 +1,75 @@
+import boto3
+import datetime
+import os
+
+sns = boto3.client('sns')
+
+def lambda_handler(event, context):
+    rds = boto3.client('rds')
+    instance_id = 'database-1'  # Replace with your RDS instance ID
+    retention_days = 7  # Set retention period (in days)
+
+    # Start an RDS snapshot
+    snapshot_id = f"{instance_id}-{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}"
+    try:
+        # Create the RDS snapshot
+        response = rds.create_db_snapshot(
+            DBSnapshotIdentifier=snapshot_id,
+            DBInstanceIdentifier=instance_id
+        )
+        print(f"Backup started for {instance_id}, Snapshot ID: {snapshot_id}")
+        
+        # Publish success notification to SNS
+        sns.publish(
+            TopicArn='arn:aws:sns:ap-south-1:533267294631:RDS_SNS',  # Replace with actual SNS Topic ARN
+            Message=f"Backup started successfully for {instance_id}. Snapshot ID: {snapshot_id}",
+            Subject="Backup Notification"
+        )
+    except Exception as e:
+        error_message = f"Error creating snapshot for {instance_id}: {e}"
+        print(error_message)
+
+        # Publish error notification to SNS
+        sns.publish(
+            TopicArn='arn:aws:sns:ap-south-1:533267294631:RDS_SNS',  # Replace with actual SNS Topic ARN
+            Message=error_message,
+            Subject="Backup Notification - Error"
+        )
+
+    # Step 2: Delete old snapshots based on retention policy
+    try:
+        # Calculate the retention cutoff date
+        retention_cutoff = datetime.datetime.now() - datetime.timedelta(days=retention_days)
+
+        # List all snapshots for the RDS instance
+        snapshots = rds.describe_db_snapshots(DBInstanceIdentifier=instance_id)['DBSnapshots']
+        
+        for snapshot in snapshots:
+            # Extract the snapshot creation time and compare it with the retention cutoff
+            snapshot_date = snapshot['SnapshotCreateTime'].replace(tzinfo=None)
+            if snapshot_date < retention_cutoff:
+                # If the snapshot is older than the retention period, delete it
+                rds.delete_db_snapshot(DBSnapshotIdentifier=snapshot['DBSnapshotIdentifier'])
+                print(f"Deleted old snapshot: {snapshot['DBSnapshotIdentifier']}")
+                
+                # Optional: Send a deletion notification via SNS
+                sns.publish(
+                    TopicArn='arn:aws:sns:ap-south-1:533267294631:RDS_SNS',  # Replace with actual SNS Topic ARN
+                    Message=f"Deleted old snapshot: {snapshot['DBSnapshotIdentifier']}",
+                    Subject="Backup Deletion Notification"
+                )
+    except Exception as e:
+        retention_error_message = f"Error in retention policy for {instance_id}: {e}"
+        print(retention_error_message)
+
+        # Publish error notification for retention policy to SNS
+        sns.publish(
+            TopicArn='arn:aws:sns:ap-south-1:533267294631:RDS_SNS',  # Replace with actual SNS Topic ARN
+            Message=retention_error_message,
+            Subject="Retention Policy Error"
+        )
+
+    return {
+        'statusCode': 200,
+        'body': f"Backup started for {instance_id}, Snapshot ID: {snapshot_id}"
+    }
