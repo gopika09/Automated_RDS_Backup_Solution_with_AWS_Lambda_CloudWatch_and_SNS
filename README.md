@@ -1,7 +1,5 @@
 # Automated RDS Backup and Retention Management
 
-## Introduction :
-
 This project automates the backup process for an AWS RDS instance, creates snapshots, and implements a retention policy to manage the deletion of old snapshots. It also integrates AWS Lambda, SNS (Simple Notification Service), and EventBridge to schedule the backup process and notify users of successful backups and deletions.
 
 ## Overview :
